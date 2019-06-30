@@ -10,4 +10,18 @@ object Utils {
         val lastName = parts?.getOrNull(1)
         return firstName to lastName
     }
+
+    fun toInitials(firstName: String?, lastName: String?): String? {
+        if (firstName.isNullOrBlank() && lastName.isNullOrBlank()) {
+            return null
+        }
+        var res = ""
+        if (!firstName.isNullOrBlank()) {
+            res += firstName[0].toUpperCase().toString()
+        }
+        if (!lastName.isNullOrBlank()) {
+            res += lastName[0].toUpperCase().toString()
+        }
+        return res
+    }
 }
