@@ -69,10 +69,10 @@ object Utils {
         }
         var res = ""
         if (!firstName.isNullOrBlank()) {
-            res += firstName[0].toUpperCase().toString()
+            res += firstName.trim()[0].toUpperCase().toString()
         }
         if (!lastName.isNullOrBlank()) {
-            res += lastName[0].toUpperCase().toString()
+            res += lastName.trim()[0].toUpperCase().toString()
         }
         return res
     }
