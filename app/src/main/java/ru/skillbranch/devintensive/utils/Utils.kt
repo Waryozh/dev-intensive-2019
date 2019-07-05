@@ -49,7 +49,7 @@ object Utils {
 
     fun transliteration(payload: String, divider: String = " "): String {
         var res = ""
-        for (c in payload) {
+        for (c in payload.trim()) {
             val cIsUpper = c.isUpperCase()
             var transliteratedCharSeq = rusEngLettersMap[c.toLowerCase().toString()] ?: c.toString()
             if (cIsUpper) {
