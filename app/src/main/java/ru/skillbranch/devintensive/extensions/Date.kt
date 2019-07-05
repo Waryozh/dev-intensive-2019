@@ -10,10 +10,36 @@ const val HOUR = 60 * MINUTE
 const val DAY = 24 * HOUR
 
 enum class TimeUnits {
-    SECOND,
-    MINUTE,
-    HOUR,
-    DAY
+    SECOND {
+        override val ONE = "секунду"
+        override val FEW = "секунды"
+        override val MANY = "секунд"
+    },
+    MINUTE {
+        override val ONE = "минуту"
+        override val FEW = "минуты"
+        override val MANY = "минут"
+    },
+    HOUR {
+        override val ONE = "час"
+        override val FEW = "часа"
+        override val MANY = "часов"
+    },
+    DAY {
+        override val ONE = "день"
+        override val FEW = "дня"
+        override val MANY = "дней"
+    };
+
+    abstract val ONE: String
+    abstract val FEW: String
+    abstract val MANY: String
+
+    fun plural(value: Long): String = when {
+        (value % 10 == 1L) && (value % 100 != 11L) -> "$value ${this.ONE}"
+        (value % 10 in 2L..4L) && (value % 100 !in 12L..14L) -> "$value ${this.FEW}"
+        else -> "$value ${this.MANY}"
+    }
 }
 
 fun Date.format(pattern: String = "HH:mm:ss dd.MM.yy"): String {
@@ -36,24 +62,6 @@ fun Date.add(value: Int, units: TimeUnits = TimeUnits.SECOND): Date {
     return this
 }
 
-private fun minutesAsPlurals(minutes: Long): String = when (minutes) {
-    1L -> "$minutes минуту"
-    in 2L..4L -> "$minutes минуты"
-    else -> "$minutes минут"
-}
-
-private fun hoursAsPlurals(hours: Long): String = when (hours) {
-    1L -> "$hours час"
-    in 2L..4L -> "$hours часа"
-    else -> "$hours часов"
-}
-
-private fun daysAsPlurals(days: Long): String = when (days) {
-    1L -> "$days день"
-    in 2L..4L -> "$days дня"
-    else -> "$days дней"
-}
-
 fun Date.humanizeDiff(date: Date = Date()): String {
     val diff = abs(this.time - date.time)
     val past = this.time < date.time
@@ -73,8 +81,8 @@ fun Date.humanizeDiff(date: Date = Date()): String {
         }
         in 75 * SECOND..45 * MINUTE -> {
             val minutes = diff / MINUTE
-            if (past) "${minutesAsPlurals(minutes)} назад"
-            else "через ${minutesAsPlurals(minutes)}"
+            if (past) "${TimeUnits.MINUTE.plural(minutes)} назад"
+            else "через ${TimeUnits.MINUTE.plural(minutes)}"
         }
         in 45 * MINUTE..75 * MINUTE -> {
             if (past) "час назад"
@@ -82,8 +90,8 @@ fun Date.humanizeDiff(date: Date = Date()): String {
         }
         in 75 * MINUTE..22 * HOUR -> {
             val hours = diff / HOUR
-            if (past) "${hoursAsPlurals(hours)} назад"
-            else "через ${hoursAsPlurals(hours)}"
+            if (past) "${TimeUnits.HOUR.plural(hours)} назад"
+            else "через ${TimeUnits.HOUR.plural(hours)}"
         }
         in 22 * HOUR..26 * HOUR -> {
             if (past) "день назад"
@@ -91,8 +99,8 @@ fun Date.humanizeDiff(date: Date = Date()): String {
         }
         in 26 * HOUR..360 * DAY -> {
             val days = diff / DAY
-            if (past) "${daysAsPlurals(days)} назад"
-            else "через ${daysAsPlurals(days)}"
+            if (past) "${TimeUnits.DAY.plural(days)} назад"
+            else "через ${TimeUnits.DAY.plural(days)}"
         }
         else -> {
             if (past) "более года назад"
