@@ -12,6 +12,9 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
     }
 
     fun listenAnswer(answer: String): Pair<String, Triple<Int, Int, Int>> = when {
+        question == Question.IDLE -> {
+            question.question to status.color
+        }
         question.answers.contains(answer) -> {
             question = question.nextQuestion()
             "Отлично - ты справился\n${question.question}" to status.color
