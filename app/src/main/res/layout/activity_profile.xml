@@ -31,8 +31,8 @@
                     android:layout_height="@dimen/btn_round_size_40"
                     android:background="@drawable/btn_round_bg"
                     android:src="@drawable/ic_switch_day_night"
-                    android:layout_toLeftOf="@id/iv_avatar"
-                    android:layout_marginRight="@dimen/spacing_huge_32"
+                    android:layout_toStartOf="@id/iv_avatar"
+                    android:layout_marginEnd="@dimen/spacing_huge_32"
                     android:layout_marginTop="36dp"/>
 
             <ImageView
@@ -48,8 +48,8 @@
                     android:layout_height="@dimen/btn_round_size_40"
                     android:background="@drawable/btn_round_bg"
                     android:src="@drawable/ic_edit_black_24dp"
-                    android:layout_toRightOf="@id/iv_avatar"
-                    android:layout_marginLeft="@dimen/spacing_huge_32"
+                    android:layout_toEndOf="@id/iv_avatar"
+                    android:layout_marginStart="@dimen/spacing_huge_32"
                     android:layout_marginTop="36dp"/>
 
             <TextView
@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="0"
-                    android:drawableLeft="@drawable/ic_sp_24"/>
+                    android:drawableStart="@drawable/ic_sp_24"/>
 
             <TextView
                     style="@style/Profile.Metrics.Label"
@@ -130,7 +130,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="0"
-                    android:drawableLeft="@drawable/ic_respect_24"/>
+                    android:drawableStart="@drawable/ic_respect_24"/>
 
             <TextView
                     style="@style/Profile.Metrics.Label"
@@ -158,8 +158,8 @@
                 android:id="@+id/wr_first_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_normal_16"
-                android:layout_toRightOf="@id/ic_avatar">
+                android:layout_marginStart="@dimen/spacing_normal_16"
+                android:layout_toEndOf="@id/ic_avatar">
 
             <EditText
                     android:id="@+id/et_first_name"
@@ -176,8 +176,8 @@
                 android:id="@+id/wr_last_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_normal_16"
-                android:layout_toRightOf="@id/ic_avatar"
+                android:layout_marginStart="@dimen/spacing_normal_16"
+                android:layout_toEndOf="@id/ic_avatar"
                 android:layout_below="@id/wr_first_name">
 
             <EditText
@@ -197,7 +197,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="?attr/colorDivider"
-            android:layout_marginLeft="@dimen/space_maximum_72"/>
+            android:layout_marginStart="@dimen/space_maximum_72"/>
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -214,7 +214,7 @@
                 android:id="@+id/wr_about"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_normal_16"
+                android:layout_marginStart="@dimen/spacing_normal_16"
                 app:counterMaxLength="128">
 
             <EditText
@@ -232,7 +232,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="?attr/colorDivider"
-            android:layout_marginLeft="@dimen/space_maximum_72"/>
+            android:layout_marginStart="@dimen/space_maximum_72"/>
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -268,7 +268,7 @@
                 android:id="@+id/ic_eye"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginLeft="@dimen/spacing_normal_16"
+                android:layout_marginStart="@dimen/spacing_normal_16"
                 android:src="@drawable/ic_eye_24dp"
                 android:layout_gravity="center_vertical"/>
 
