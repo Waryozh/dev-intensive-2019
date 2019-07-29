@@ -76,4 +76,10 @@ object Utils {
         }
         return res
     }
+
+    fun isRepositoryValid(repository: String) =
+        repository.isEmpty() ||
+                "^(?:https://)?(?:www\\.)?(?:github\\.com/)(?!enterprise|features|topics|collections|trending|events|marketplace|pricing|nonprofit|customer-stories|security|login|join)\\w+\$".toRegex().matches(
+                    repository
+                )
 }
