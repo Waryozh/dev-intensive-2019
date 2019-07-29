@@ -1,5 +1,8 @@
 package ru.skillbranch.devintensive.utils
 
+import android.content.Context
+import android.util.TypedValue
+
 object Utils {
     fun parseFullName(fullName: String?): Pair<String?, String?> {
         if (fullName.isNullOrBlank()) {
@@ -82,4 +85,10 @@ object Utils {
                 "^(?:https://)?(?:www\\.)?(?:github\\.com/)(?!enterprise|features|topics|collections|trending|events|marketplace|pricing|nonprofit|customer-stories|security|login|join)\\w+\$".toRegex().matches(
                     repository
                 )
+
+    fun dpToPx(context: Context, dp: Int): Int =
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics).toInt()
+
+    fun pxToDp(context: Context, px: Int): Int =
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, px.toFloat(), context.resources.displayMetrics).toInt()
 }
