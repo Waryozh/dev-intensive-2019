@@ -96,9 +96,7 @@ class ProfileActivity : AppCompatActivity() {
                     resources.getColor(R.color.color_accent, theme),
                     PorterDuff.Mode.SRC_IN
                 )
-            } else {
-                null
-            }
+            } else null
 
             val icon = if (isEdit) {
                 resources.getDrawable(R.drawable.ic_save_black_24dp, theme)
