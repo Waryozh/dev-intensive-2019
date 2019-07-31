@@ -78,6 +78,12 @@ class ProfileActivity : AppCompatActivity() {
         })
     }
 
+    private fun getColorAccent(): Int {
+        val value = TypedValue()
+        theme.resolveAttribute(R.attr.colorAccent, value, true)
+        return value.data
+    }
+
     private fun showCurrentMode(isEdit: Boolean) {
         val info = viewFields.filter { setOf("firstName", "lastName", "about", "repository").contains(it.key) }
         for ((_, v) in info) {
@@ -95,7 +101,7 @@ class ProfileActivity : AppCompatActivity() {
         with(btn_edit) {
             background.colorFilter = if (isEdit) {
                 PorterDuffColorFilter(
-                    resources.getColor(R.color.color_accent, theme),
+                    getColorAccent(),
                     PorterDuff.Mode.SRC_IN
                 )
             } else null
@@ -141,9 +147,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun updateAvatar(profile: Profile) {
-        val value = TypedValue()
-        theme.resolveAttribute(R.attr.colorAccent, value, true)
-        iv_avatar.backgroundPaintColor = value.data
+        iv_avatar.backgroundPaintColor = getColorAccent()
         iv_avatar.text = Utils.toInitials(profile.firstName, profile.lastName)
     }
 
