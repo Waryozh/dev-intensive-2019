@@ -147,8 +147,12 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun updateAvatar(profile: Profile) {
-        iv_avatar.backgroundPaintColor = getColorAccent()
-        iv_avatar.text = Utils.toInitials(profile.firstName, profile.lastName)
+        val initials = Utils.toInitials(profile.firstName, profile.lastName)
+        if (initials != null) {
+            iv_avatar.setImageBitmap(initials, getColorAccent())
+        } else {
+            iv_avatar.setImageResource(R.drawable.avatar_default)
+        }
     }
 
     private fun saveProfileInfo() {
