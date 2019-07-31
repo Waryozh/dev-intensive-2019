@@ -87,8 +87,8 @@ object Utils {
                 )
 
     fun dpToPx(context: Context, dp: Int): Int =
-        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics).toInt()
+        (dp * context.resources.displayMetrics.density + 0.5f).toInt()
 
     fun pxToDp(context: Context, px: Int): Int =
-        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, px.toFloat(), context.resources.displayMetrics).toInt()
+        (px / context.resources.displayMetrics.density + 0.5f).toInt()
 }
