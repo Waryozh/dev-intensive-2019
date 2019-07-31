@@ -2,21 +2,16 @@ package ru.skillbranch.devintensive.ui.custom
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.widget.ImageView
 import androidx.annotation.ColorRes
 import androidx.annotation.Dimension
 import androidx.core.content.ContextCompat
+import ru.skillbranch.devintensive.R
 import ru.skillbranch.devintensive.utils.Utils
 import kotlin.math.min
-import android.graphics.ColorFilter
-import androidx.annotation.DrawableRes
-import android.graphics.drawable.Drawable
-import android.graphics.Bitmap
-import android.net.Uri
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
-import ru.skillbranch.devintensive.R
 
 
 class CircleImageView : ImageView {
@@ -46,27 +41,18 @@ class CircleImageView : ImageView {
     private var borderColor = DEFAULT_BORDER_COLOR
     private var borderWidth = Utils.dpToPx(context, DEFAULT_BORDER_WIDTH)
 
-    private var ready: Boolean = false
-    private var setupPending: Boolean = false
-    private var borderOverlay: Boolean = false
-
-    private val drawableRect = RectF()
-    private val borderRect = RectF()
-
+    private var bitmapShader: Shader? = null
     private val shaderMatrix = Matrix()
-    private val bitmapPaint = Paint()
-    private val borderPaint = Paint()
-    private val circleBackgroundPaint = Paint()
+
+    private val bitmapDrawBounds = RectF()
+    private val borderBounds = RectF()
 
     private var bitmap: Bitmap? = null
-    private var bitmapShader: BitmapShader? = null
-    private var bitmapWidth: Int = 0
-    private var bitmapHeight: Int = 0
 
-    private var drawableRadius: Float = 0F
-    private var borderRadius: Float = 0F
+    private val bitmapPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
-    private var colorFilter: ColorFilter? = null
+    private var initialized: Boolean = false
 
     private fun init() {
         if (attrs != null) {
@@ -74,15 +60,14 @@ class CircleImageView : ImageView {
             borderColor = a.getColor(R.styleable.CircleImageView_cv_borderColor, DEFAULT_BORDER_COLOR)
             borderWidth = a.getDimensionPixelSize(R.styleable.CircleImageView_cv_borderWidth, borderWidth)
             a.recycle()
-
-            super.setScaleType(ScaleType.CENTER_CROP)
-            ready = true
-
-            if (setupPending) {
-                setup()
-                setupPending = false
-            }
         }
+
+        borderPaint.color = borderColor
+        borderPaint.style = Paint.Style.STROKE
+        borderPaint.strokeWidth = borderWidth.toFloat()
+
+        initialized = true
+        setupBitmap()
     }
 
     @Dimension
@@ -92,7 +77,7 @@ class CircleImageView : ImageView {
         val newWidth = Utils.dpToPx(context, dp)
         if (newWidth != borderWidth) {
             borderWidth = newWidth
-            setup()
+            invalidate()
         }
     }
 
@@ -109,163 +94,100 @@ class CircleImageView : ImageView {
     }
 
     override fun onDraw(canvas: Canvas) {
-        bitmap ?: return
+        canvas.drawOval(bitmapDrawBounds, bitmapPaint)
 
-        if (borderWidth > 0) {
-            canvas.drawCircle(borderRect.centerX(), borderRect.centerY(), borderRadius, borderPaint)
+        if (borderPaint.strokeWidth > 0f) {
+            canvas.drawOval(borderBounds, borderPaint)
         }
-
-        canvas.drawCircle(drawableRect.centerX(), drawableRect.centerY(), drawableRadius, bitmapPaint)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        setup()
+
+        val halfStrokeWidth = borderPaint.strokeWidth / 2f
+        updateCircleDrawBounds(bitmapDrawBounds)
+        borderBounds.set(bitmapDrawBounds)
+        borderBounds.inset(halfStrokeWidth, halfStrokeWidth)
+
+        updateBitmapSize()
     }
 
-    override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
-        super.setPadding(left, top, right, bottom)
-        setup()
-    }
-
-    override fun setPaddingRelative(start: Int, top: Int, end: Int, bottom: Int) {
-        super.setPaddingRelative(start, top, end, bottom)
-        setup()
-    }
-
-    override fun setImageBitmap(bm: Bitmap) {
-        super.setImageBitmap(bm)
-        initializeBitmap()
-    }
-
-    override fun setImageDrawable(drawable: Drawable?) {
-        super.setImageDrawable(drawable)
-        initializeBitmap()
-    }
-
-    override fun setImageResource(@DrawableRes resId: Int) {
-        super.setImageResource(resId)
-        initializeBitmap()
-    }
-
-    override fun setImageURI(uri: Uri?) {
-        super.setImageURI(uri)
-        initializeBitmap()
-    }
-
-    override fun setColorFilter(cf: ColorFilter) {
-        if (cf === colorFilter) return
-
-        colorFilter = cf
-        applyColorFilter()
-        invalidate()
-    }
-
-    override fun getColorFilter(): ColorFilter? = colorFilter
-
-    private fun applyColorFilter() {
-        bitmapPaint.colorFilter = colorFilter
-    }
-
-    private fun getBitmapFromDrawable(drawable: Drawable?): Bitmap? = when (drawable) {
-        null -> null
-        is BitmapDrawable -> drawable.bitmap
-        else -> {
-            val width = if (drawable is ColorDrawable) 1 else drawable.intrinsicWidth
-            val height = if (drawable is ColorDrawable) 1 else drawable.intrinsicHeight
-            val bm = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bm)
-            drawable.setBounds(0, 0, canvas.width, canvas.height)
-            drawable.draw(canvas)
-            bm
+    private fun getBitmapFromDrawable(drawable: Drawable?): Bitmap? {
+        if (drawable == null) {
+            return null
         }
+
+        if (drawable is BitmapDrawable) {
+            return drawable.bitmap
+        }
+
+        val bitmap = Bitmap.createBitmap(
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+
+        return bitmap
     }
 
-    private fun initializeBitmap() {
+    private fun updateCircleDrawBounds(bounds: RectF) {
+        val contentWidth = (width - paddingLeft - paddingRight).toFloat()
+        val contentHeight = (height - paddingTop - paddingBottom).toFloat()
+
+        var left = paddingLeft.toFloat()
+        var top = paddingTop.toFloat()
+        if (contentWidth > contentHeight) {
+            left += (contentWidth - contentHeight) / 2f
+        } else {
+            top += (contentHeight - contentWidth) / 2f
+        }
+
+        val diameter = min(contentWidth, contentHeight)
+        bounds.set(left, top, left + diameter, top + diameter)
+    }
+
+    private fun setupBitmap() {
+        if (!initialized) {
+            return
+        }
+
         bitmap = getBitmapFromDrawable(drawable)
-        setup()
-    }
-
-    private fun setup() {
-        if (!ready) {
-            setupPending = true
-            return
-        }
-
-        if (width == 0 && height == 0) {
-            return
-        }
-
         if (bitmap == null) {
-            invalidate()
             return
         }
 
         bitmapShader = BitmapShader(bitmap!!, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
-
-        bitmapPaint.isAntiAlias = true
         bitmapPaint.shader = bitmapShader
 
-        with(borderPaint) {
-            style = Paint.Style.STROKE
-            isAntiAlias = true
-            color = borderColor
-            strokeWidth = borderWidth.toFloat()
-        }
-
-        with(circleBackgroundPaint) {
-            style = Paint.Style.FILL
-            isAntiAlias = true
-            color = Color.TRANSPARENT
-        }
-
-        bitmapHeight = bitmap!!.height
-        bitmapWidth = bitmap!!.width
-
-        borderRect.set(calculateBounds())
-        borderRadius = min((borderRect.height() - borderWidth) / 2.0f, (borderRect.width() - borderWidth) / 2.0f)
-
-        drawableRect.set(borderRect)
-        if (!borderOverlay && borderWidth > 0) {
-            drawableRect.inset(borderWidth - 1.0f, borderWidth - 1.0f)
-        }
-        drawableRadius = min(drawableRect.height() / 2.0f, drawableRect.width() / 2.0f)
-
-        applyColorFilter()
-        updateShaderMatrix()
-        invalidate()
+        updateBitmapSize()
     }
 
-    private fun calculateBounds(): RectF {
-        val availableWidth = width - paddingLeft - paddingRight
-        val availableHeight = height - paddingTop - paddingBottom
+    private fun updateBitmapSize() {
+        if (bitmap == null) {
+            return
+        }
 
-        val sideLength = min(availableWidth, availableHeight)
-
-        val left = paddingLeft + (availableWidth - sideLength) / 2f
-        val top = paddingTop + (availableHeight - sideLength) / 2f
-
-        return RectF(left, top, left + sideLength, top + sideLength)
-    }
-
-    private fun updateShaderMatrix() {
+        val dx: Float
+        val dy: Float
         val scale: Float
-        var dx = 0f
-        var dy = 0f
 
-        shaderMatrix.set(null)
-
-        if (bitmapWidth * drawableRect.height() > drawableRect.width() * bitmapHeight) {
-            scale = drawableRect.height() / bitmapHeight.toFloat()
-            dx = (drawableRect.width() - bitmapWidth * scale) * 0.5f
+        // Scale up/down with respect to this view size and maintain aspect ratio
+        // Translate bitmap position with dx/dy to the center of the image
+        if (bitmap!!.width < bitmap!!.height) {
+            scale = bitmapDrawBounds.width() / bitmap!!.width.toFloat()
+            dx = bitmapDrawBounds.left
+            dy = bitmapDrawBounds.top - (bitmap!!.height * scale / 2f) + (bitmapDrawBounds.width() / 2f)
         } else {
-            scale = drawableRect.width() / bitmapWidth.toFloat()
-            dy = (drawableRect.height() - bitmapHeight * scale) * 0.5f
+            scale = bitmapDrawBounds.height() / bitmap!!.height.toFloat()
+            dx = bitmapDrawBounds.left - (bitmap!!.width * scale / 2f) + (bitmapDrawBounds.width() / 2f)
+            dy = bitmapDrawBounds.top
         }
 
         shaderMatrix.setScale(scale, scale)
-        shaderMatrix.postTranslate((dx + 0.5f).toInt() + drawableRect.left, (dy + 0.5f).toInt() + drawableRect.top)
-
-        bitmapShader!!.setLocalMatrix(shaderMatrix)
+        shaderMatrix.postTranslate(dx, dy)
+        bitmapShader?.setLocalMatrix(shaderMatrix)
     }
 }
