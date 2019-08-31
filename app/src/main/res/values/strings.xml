@@ -9,5 +9,6 @@
     <string name="menu_search_title">Поиск</string>
     <string name="undo_archive_chat">ОТМЕНА</string>
     <string name="archive_chat_confirmation">Вы точно хотите добавить %1$s в архив?</string>
+    <string name="enter_chat_title_hint">Введите название чата</string>
     <string name="enter_user_name_hint">Введите имя пользователя</string>
 </resources>

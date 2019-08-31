@@ -1,13 +1,17 @@
 package ru.skillbranch.devintensive.viewmodels
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import ru.skillbranch.devintensive.extensions.mutableLiveData
 import ru.skillbranch.devintensive.models.data.ChatItem
 import ru.skillbranch.devintensive.repositories.ChatRepository
 
 class MainViewModel : ViewModel() {
     private val chatRepository = ChatRepository
+
+    private val query = mutableLiveData("")
 
     private val chats = Transformations.map(chatRepository.loadChats()) { chats ->
         return@map chats.filter { !it.isArchived }
@@ -16,7 +20,19 @@ class MainViewModel : ViewModel() {
     }
 
     fun getChatData(): LiveData<List<ChatItem>> {
-        return chats
+        val result = MediatorLiveData<List<ChatItem>>()
+
+        val filterF = {
+            val queryString = query.value!!
+            val chatsList = chats.value!!
+            result.value = if (queryString.isEmpty()) chatsList
+            else chatsList.filter { it.title.contains(queryString, true) }
+        }
+
+        result.addSource(chats) { filterF.invoke() }
+        result.addSource(query) { filterF.invoke() }
+
+        return result
     }
 
     fun addToArchive(chatId: String) {
@@ -29,5 +45,9 @@ class MainViewModel : ViewModel() {
         val chat = chatRepository.find(chatId)
         chat ?: return
         chatRepository.update(chat.copy(isArchived = false))
+    }
+
+    fun handleSearchQuery(text: String?) {
+        query.value = text
     }
 }
