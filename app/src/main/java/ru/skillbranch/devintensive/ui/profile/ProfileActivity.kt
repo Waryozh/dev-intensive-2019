@@ -149,7 +149,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun updateAvatar(profile: Profile) {
         val initials = Utils.toInitials(profile.firstName, profile.lastName)
         if (initials != null) {
-            iv_avatar.setImageBitmap(initials, getColorAccent())
+            iv_avatar.setInitials(initials)
         } else {
             iv_avatar.setImageResource(R.drawable.avatar_default)
         }

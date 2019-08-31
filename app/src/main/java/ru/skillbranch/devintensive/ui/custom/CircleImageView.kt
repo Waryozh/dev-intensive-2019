@@ -14,7 +14,7 @@ import ru.skillbranch.devintensive.utils.Utils
 import kotlin.math.min
 
 
-class CircleImageView : ImageView {
+open class CircleImageView : ImageView {
     private var attrs: AttributeSet? = null
 
     constructor(context: Context) : super(context)
@@ -34,10 +34,8 @@ class CircleImageView : ImageView {
     }
 
     companion object {
-        private const val DEFAULT_TEXT_COLOR = Color.WHITE
         private const val DEFAULT_BORDER_COLOR = Color.WHITE
         private const val DEFAULT_BORDER_WIDTH = 2
-        private const val DEFAULT_TEXT_SIZE = 90f
     }
 
     private var borderColor = DEFAULT_BORDER_COLOR
@@ -98,11 +96,6 @@ class CircleImageView : ImageView {
         invalidate()
     }
 
-    fun setImageBitmap(text: String, colorId: Int) {
-        super.setImageBitmap(getBitmapFromString(text, colorId))
-        setupBitmap()
-    }
-
     override fun setImageResource(resId: Int) {
         super.setImageResource(resId)
         setupBitmap()
@@ -110,9 +103,7 @@ class CircleImageView : ImageView {
 
     override fun onDraw(canvas: Canvas) {
         canvas.drawOval(bitmapDrawBounds, bitmapPaint)
-        if (borderPaint.strokeWidth > 0f) {
-            canvas.drawOval(borderBounds, borderPaint)
-        }
+        drawStroke(canvas)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -126,37 +117,10 @@ class CircleImageView : ImageView {
         updateBitmapSize()
     }
 
-    private fun getBitmapFromString(text: String, colorId: Int): Bitmap {
-        val width = resources.getDimensionPixelSize(R.dimen.avatar_round_size)
-        val height = resources.getDimensionPixelSize(R.dimen.avatar_round_size)
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-
-        // Prepare the paint for background
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-        paint.style = Paint.Style.FILL
-        paint.color = colorId
-
-        val canvas = Canvas()
-        canvas.setBitmap(bitmap)
-
-        val halfWidth = (width / 2).toFloat()
-        val halfHeight = (height / 2).toFloat()
-        canvas.drawCircle(halfWidth, halfHeight, halfWidth, paint)
-
-        // Now that we have drawn the background, reuse the paint for drawing text
-        paint.textSize = DEFAULT_TEXT_SIZE
-        paint.color = DEFAULT_TEXT_COLOR
-
-        val bounds = Rect()
-        paint.getTextBounds(text, 0, text.length, bounds)
-        canvas.drawText(
-            text,
-            halfWidth - paint.measureText(text) / 2,
-            halfHeight + bounds.height() / 2,
-            paint
-        )
-
-        return bitmap
+    protected fun drawStroke(canvas: Canvas) {
+        if (borderPaint.strokeWidth > 0f) {
+            canvas.drawOval(borderBounds, borderPaint)
+        }
     }
 
     private fun getBitmapFromDrawable(drawable: Drawable?): Bitmap? {
@@ -180,7 +144,7 @@ class CircleImageView : ImageView {
         return bitmap
     }
 
-    private fun updateCircleDrawBounds(bounds: RectF) {
+    protected fun updateCircleDrawBounds(bounds: RectF) {
         val contentWidth = (width - paddingLeft - paddingRight).toFloat()
         val contentHeight = (height - paddingTop - paddingBottom).toFloat()
 
