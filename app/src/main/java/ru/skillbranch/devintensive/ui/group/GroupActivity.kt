@@ -39,7 +39,7 @@ class GroupActivity : AppCompatActivity() {
 
         val searchItem = menu?.findItem(R.id.action_search)
         val searchView = searchItem?.actionView as SearchView
-        searchView.queryHint = "Введите имя пользователя"
+        searchView.queryHint = getString(R.string.enter_user_name_hint)
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
