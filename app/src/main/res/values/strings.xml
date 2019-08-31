@@ -7,4 +7,6 @@
     <string name="profile_hint_last_name">Фамилия</string>
     <string name="profile_hint_first_name">Имя</string>
     <string name="menu_search_title">Поиск</string>
+    <string name="undo_archive_chat">ОТМЕНА</string>
+    <string name="archive_chat_confirmation">Вы точно хотите добавить %1$s в архив?</string>
 </resources>
