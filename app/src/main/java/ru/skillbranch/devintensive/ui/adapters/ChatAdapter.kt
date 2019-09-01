@@ -153,11 +153,7 @@ class ChatAdapter(private val listener: (ChatItem) -> Unit) : RecyclerView.Adapt
         override fun bind(item: ChatItem, listener: (ChatItem) -> Unit) {
             tv_title_archive.text = item.title
             tv_message_archive.text = item.shortDescription
-
-            with(tv_message_author_archive) {
-                visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
-                text = "@${item.author}"
-            }
+            tv_message_author_archive.text = "@${item.author}"
 
             with(tv_date_archive) {
                 visibility = if (item.lastMessageDate != null) View.VISIBLE else View.GONE
