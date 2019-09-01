@@ -12,5 +12,6 @@
     <string name="unarchive_chat_confirmation">Восстановить чат с %1$s из архива?</string>
     <string name="enter_chat_title_hint">Введите название чата</string>
     <string name="enter_user_name_hint">Введите имя пользователя</string>
+    <string name="group_creation">Создание группы</string>
     <string name="chat_archive">Архив чатов</string>
 </resources>

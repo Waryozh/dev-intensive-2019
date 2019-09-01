@@ -15,9 +15,8 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/AppTheme.PopupOverlay">
-
-        </androidx.appcompat.widget.Toolbar>
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:title="@string/group_creation" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -55,9 +54,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/spacing_normal_16"
-            app:srcCompat="@drawable/ic_arrow_forward_black_24dp"
-            android:visibility="invisible"
             android:scaleX="0"
-            android:scaleY="0"/>
+            android:scaleY="0"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_arrow_forward_black_24dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
