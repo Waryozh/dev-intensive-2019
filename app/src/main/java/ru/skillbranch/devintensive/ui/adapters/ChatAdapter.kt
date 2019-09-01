@@ -170,7 +170,7 @@ class ChatAdapter(private val listener: (ChatItem) -> Unit) : RecyclerView.Adapt
             }
 
             itemView.setOnClickListener {
-                // TODO start Archive activity here
+                listener.invoke(item)
             }
         }
     }
