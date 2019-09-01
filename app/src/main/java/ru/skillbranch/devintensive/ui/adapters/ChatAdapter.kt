@@ -8,13 +8,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.item_chat_archive.*
 import kotlinx.android.synthetic.main.item_chat_group.*
 import kotlinx.android.synthetic.main.item_chat_single.*
 import ru.skillbranch.devintensive.R
 import ru.skillbranch.devintensive.models.data.ChatItem
 import ru.skillbranch.devintensive.models.data.ChatType
 
-class ChatAdapter(val listener: (ChatItem) -> Unit) : RecyclerView.Adapter<ChatAdapter.ChatItemViewHolder>() {
+class ChatAdapter(private val listener: (ChatItem) -> Unit) : RecyclerView.Adapter<ChatAdapter.ChatItemViewHolder>() {
     companion object {
         private const val ARCHIVE_TYPE = 0
         private const val SINGLE_TYPE = 1
@@ -32,8 +33,9 @@ class ChatAdapter(val listener: (ChatItem) -> Unit) : RecyclerView.Adapter<ChatA
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            SINGLE_TYPE -> SingleViewHolder(inflater.inflate(R.layout.item_chat_single, parent, false))
-            else -> GroupViewHolder(inflater.inflate(R.layout.item_chat_group, parent, false))
+            ARCHIVE_TYPE -> ArchiveViewHolder(inflater.inflate(R.layout.item_chat_archive, parent, false))
+            GROUP_TYPE -> GroupViewHolder(inflater.inflate(R.layout.item_chat_group, parent, false))
+            else -> SingleViewHolder(inflater.inflate(R.layout.item_chat_single, parent, false))
         }
     }
 
@@ -88,7 +90,6 @@ class ChatAdapter(val listener: (ChatItem) -> Unit) : RecyclerView.Adapter<ChatA
             } else {
                 Glide.with(itemView)
                     .load(item.avatar)
-
                     .into(iv_avatar_single)
             }
 
@@ -144,6 +145,32 @@ class ChatAdapter(val listener: (ChatItem) -> Unit) : RecyclerView.Adapter<ChatA
 
             itemView.setOnClickListener {
                 listener.invoke(item)
+            }
+        }
+    }
+
+    inner class ArchiveViewHolder(convertView: View) : ChatItemViewHolder(convertView) {
+        override fun bind(item: ChatItem, listener: (ChatItem) -> Unit) {
+            tv_title_archive.text = item.title
+            tv_message_archive.text = item.shortDescription
+
+            with(tv_message_author_archive) {
+                visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
+                text = item.author
+            }
+
+            with(tv_date_archive) {
+                visibility = if (item.lastMessageDate != null) View.VISIBLE else View.GONE
+                text = item.lastMessageDate
+            }
+
+            with(tv_counter_archive) {
+                visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
+                text = item.messageCount.toString()
+            }
+
+            itemView.setOnClickListener {
+                // TODO start Archive activity here
             }
         }
     }

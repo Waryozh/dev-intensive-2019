@@ -58,6 +58,29 @@ data class Chat(
             )
         }
     }
+
+    companion object {
+        fun toArchiveItem(archivedChats: List<Chat>): ChatItem {
+            val chatsWithUnreadMessages = archivedChats.filter { it.unreadableMessageCount() > 0 }
+            val lastChat: Chat = if (chatsWithUnreadMessages.isEmpty()) archivedChats.last()
+            else chatsWithUnreadMessages.maxBy { it.lastMessageDate()!! }!!
+
+            val messageCount = chatsWithUnreadMessages.sumBy { it.unreadableMessageCount() }
+
+            return ChatItem(
+                "-1",
+                null,
+                "",
+                "Архив чатов",
+                lastChat.lastMessageShort().first,
+                messageCount,
+                lastChat.lastMessageDate()?.shortFormat(),
+                false,
+                ChatType.ARCHIVE,
+                lastChat.lastMessageShort().second
+            )
+        }
+    }
 }
 
 enum class ChatType {
