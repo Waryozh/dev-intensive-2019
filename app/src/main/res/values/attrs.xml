@@ -8,6 +8,23 @@
     <attr name="colorDivider" format="reference" />
     <attr name="colorIcon" format="reference" />
 
+    <attr name="colorToolbar" format="reference" />
+    <attr name="colorFab" format="reference" />
+    <attr name="colorItemBackground" format="reference" />
+    <attr name="colorItemBackgroundSelected" format="reference" />
+    <attr name="colorSwipeBackground" format="reference" />
+    <attr name="colorOnlineIndicator" format="reference" />
+    <attr name="colorUnreadIndicator" format="reference" />
+    <attr name="colorIconDone" format="reference" />
+    <attr name="colorArchiveBackground" format="reference" />
+    <attr name="colorChip" format="reference" />
+    <attr name="colorChipButton" format="reference" />
+    <attr name="colorSnackbar" format="reference" />
+    <attr name="colorSnackbarText" format="reference" />
+    <attr name="colorSnackbarActionText" format="reference" />
+    <attr name="colorTextPrimary" format="reference" />
+    <attr name="colorTextSecondary" format="reference" />
+
     <declare-styleable name="CircleImageView">
         <attr name="cv_borderColor" format="color" />
         <attr name="cv_borderWidth" format="dimension" />

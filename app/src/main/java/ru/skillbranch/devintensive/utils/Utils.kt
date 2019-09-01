@@ -1,6 +1,7 @@
 package ru.skillbranch.devintensive.utils
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.TypedValue
 
 object Utils {
@@ -91,4 +92,10 @@ object Utils {
 
     fun pxToDp(context: Context, px: Int): Int =
         (px / context.resources.displayMetrics.density + 0.5f).toInt()
+
+    fun getColorFromTheme(attr: Int, theme: Resources.Theme): Int {
+        val value = TypedValue()
+        theme.resolveAttribute(attr, value, true)
+        return value.data
+    }
 }

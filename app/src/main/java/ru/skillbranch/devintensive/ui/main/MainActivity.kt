@@ -1,9 +1,9 @@
 package ru.skillbranch.devintensive.ui.main
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.skillbranch.devintensive.R
+import ru.skillbranch.devintensive.extensions.styleDayNight
 import ru.skillbranch.devintensive.models.data.ChatType
 import ru.skillbranch.devintensive.ui.adapters.ChatAdapter
 import ru.skillbranch.devintensive.ui.adapters.ChatItemTouchHelperCallback
@@ -66,7 +67,9 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, ArchiveActivity::class.java)
                 startActivity(intent)
             } else {
-                Snackbar.make(rv_chat_list, "Click on ${it.title}", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(rv_chat_list, "Click on ${it.title}", Snackbar.LENGTH_LONG)
+                    .styleDayNight(theme)
+                    .show()
             }
         }
 
@@ -75,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         val touchCallback = ChatItemTouchHelperCallback(chatAdapter) { chat ->
             viewModel.addToArchive(chat.id)
             Snackbar.make(rv_chat_list, getString(R.string.archive_chat_confirmation, chat.title), Snackbar.LENGTH_LONG)
+                .styleDayNight(theme)
                 .setAction(getString(R.string.undo)) {
                     viewModel.restoreFromArchive(chat.id)
                 }

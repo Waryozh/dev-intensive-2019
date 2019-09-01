@@ -15,6 +15,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorToolbar"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 app:title="@string/group_creation" />
 
@@ -54,6 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/spacing_normal_16"
+            android:background="?attr/colorFab"
             android:scaleX="0"
             android:scaleY="0"
             android:visibility="invisible"

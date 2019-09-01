@@ -5,7 +5,6 @@ import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.TypedValue
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
@@ -25,8 +24,8 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private lateinit var viewModel: ProfileViewModel
-    var isEditMode = false
-    lateinit var viewFields: Map<String, TextView>
+    private var isEditMode = false
+    private lateinit var viewFields: Map<String, TextView>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -78,12 +77,6 @@ class ProfileActivity : AppCompatActivity() {
         })
     }
 
-    private fun getColorAccent(): Int {
-        val value = TypedValue()
-        theme.resolveAttribute(R.attr.colorAccent, value, true)
-        return value.data
-    }
-
     private fun showCurrentMode(isEdit: Boolean) {
         val info = viewFields.filter { setOf("firstName", "lastName", "about", "repository").contains(it.key) }
         for ((_, v) in info) {
@@ -101,7 +94,7 @@ class ProfileActivity : AppCompatActivity() {
         with(btn_edit) {
             background.colorFilter = if (isEdit) {
                 PorterDuffColorFilter(
-                    getColorAccent(),
+                    Utils.getColorFromTheme(R.attr.colorAccent, theme),
                     PorterDuff.Mode.SRC_IN
                 )
             } else null

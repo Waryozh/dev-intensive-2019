@@ -1,6 +1,5 @@
 package ru.skillbranch.devintensive.ui.adapters
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import kotlinx.android.synthetic.main.item_chat_single.*
 import ru.skillbranch.devintensive.R
 import ru.skillbranch.devintensive.models.data.ChatItem
 import ru.skillbranch.devintensive.models.data.ChatType
+import ru.skillbranch.devintensive.utils.Utils
 
 class ChatAdapter(private val listener: (ChatItem) -> Unit) : RecyclerView.Adapter<ChatAdapter.ChatItemViewHolder>() {
     companion object {
@@ -75,11 +75,11 @@ class ChatAdapter(private val listener: (ChatItem) -> Unit) : RecyclerView.Adapt
 
     inner class SingleViewHolder(convertView: View) : ChatItemViewHolder(convertView), ItemTouchViewHolder {
         override fun onItemSelected() {
-            itemView.setBackgroundColor(Color.LTGRAY)
+            itemView.setBackgroundColor(Utils.getColorFromTheme(R.attr.colorItemBackgroundSelected, itemView.context.theme))
         }
 
         override fun onItemCleared() {
-            itemView.setBackgroundColor(Color.WHITE)
+            itemView.setBackgroundColor(Utils.getColorFromTheme(R.attr.colorItemBackground, itemView.context.theme))
         }
 
         override fun bind(item: ChatItem, listener: (ChatItem) -> Unit) {
@@ -115,11 +115,11 @@ class ChatAdapter(private val listener: (ChatItem) -> Unit) : RecyclerView.Adapt
 
     inner class GroupViewHolder(convertView: View) : ChatItemViewHolder(convertView), ItemTouchViewHolder {
         override fun onItemSelected() {
-            itemView.setBackgroundColor(Color.LTGRAY)
+            itemView.setBackgroundColor(Utils.getColorFromTheme(R.attr.colorItemBackgroundSelected, itemView.context.theme))
         }
 
         override fun onItemCleared() {
-            itemView.setBackgroundColor(Color.WHITE)
+            itemView.setBackgroundColor(Utils.getColorFromTheme(R.attr.colorItemBackground, itemView.context.theme))
         }
 
         override fun bind(item: ChatItem, listener: (ChatItem) -> Unit) {
